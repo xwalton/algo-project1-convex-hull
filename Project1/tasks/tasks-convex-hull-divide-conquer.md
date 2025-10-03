@@ -26,8 +26,8 @@
   - [x] 1.5 Write unit tests for Point class and input parsing functions
 
 - [ ] 2.0 Implement Base Case Handling for Small Point Sets
-  - [ ] 2.1 Implement ConvexHullBaseCase function for 2 points (returns line segment)
-  - [ ] 2.2 Implement ConvexHullBaseCase function for 3 points (returns triangle)
+  - [x] 2.1 Implement ConvexHullBaseCase function for 2 points (returns line segment)
+  - [x] 2.2 Implement ConvexHullBaseCase function for 3 points (returns triangle)
   - [ ] 2.3 Add validation to ensure base cases handle edge cases correctly
   - [ ] 2.4 Write unit tests for base case scenarios
 

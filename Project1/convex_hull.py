@@ -123,6 +123,56 @@ def find_leftmost_point(hull: list[Point]) -> int:
     return leftmost_idx
 
 
+def convex_hull_base_case(points: list[Point]) -> list[Point]:
+    """
+    Handle base cases for convex hull computation.
+    
+    Args:
+        points (list[Point]): List of 2 or 3 points
+        
+    Returns:
+        list[Point]: Convex hull points in order
+        
+    Raises:
+        ValueError: If points list has invalid size
+    """
+    if len(points) == 2:
+        # For 2 points, return them in order (line segment)
+        return points.copy()
+    
+    elif len(points) == 3:
+        # For 3 points, determine if they form a triangle or are collinear
+        p1, p2, p3 = points[0], points[1], points[2]
+        
+        # Calculate cross product to determine orientation
+        # (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
+        cross_product = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
+        
+        if abs(cross_product) < 1e-10:  # Points are collinear
+            # Return the two extreme points
+            if p1.x < p2.x or (p1.x == p2.x and p1.y < p2.y):
+                if p2.x < p3.x or (p2.x == p3.x and p2.y < p3.y):
+                    return [p1, p3]  # p1 and p3 are extremes
+                else:
+                    return [p1, p2]  # p1 and p2 are extremes
+            else:
+                if p1.x < p3.x or (p1.x == p3.x and p1.y < p3.y):
+                    return [p2, p3]  # p2 and p3 are extremes
+                else:
+                    return [p1, p2]  # p1 and p2 are extremes
+        else:
+            # Points form a triangle, return all three in counterclockwise order
+            if cross_product > 0:
+                # Counterclockwise order
+                return [p1, p2, p3]
+            else:
+                # Clockwise order, reverse to get counterclockwise
+                return [p1, p3, p2]
+    
+    else:
+        raise ValueError(f"Base case requires 2 or 3 points, got {len(points)}")
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -137,6 +187,18 @@ def main():
             leftmost_idx = find_leftmost_point(test_hull)
             print(f"Test hull rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
             print(f"Test hull leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
+            
+            # Test base case functions
+            print("\nTesting base cases:")
+            # Test 2 points
+            two_points = points[:2]
+            hull_2 = convex_hull_base_case(two_points)
+            print(f"2-point hull: {hull_2}")
+            
+            # Test 3 points
+            three_points = points[:3]
+            hull_3 = convex_hull_base_case(three_points)
+            print(f"3-point hull: {hull_3}")
         
         # TODO: Implement convex hull algorithm
         # TODO: Write output to output.txt
