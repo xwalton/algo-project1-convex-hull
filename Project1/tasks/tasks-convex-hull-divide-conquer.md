@@ -41,7 +41,7 @@
 
 - [ ] 4.0 Implement Main Divide and Conquer Algorithm
   - [x] 4.1 Implement ConvexHullRecursive function with divide step
-  - [ ] 4.2 Add recursive calls for left and right halves
+  - [x] 4.2 Add recursive calls for left and right halves
   - [ ] 4.3 Integrate MergeHulls into the recursive algorithm
   - [ ] 4.4 Implement main ConvexHullDivideAndConquer entry point
   - [ ] 4.5 Add proper handling of hull point ordering (clockwise/counterclockwise)
