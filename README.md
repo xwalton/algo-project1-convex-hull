@@ -6,13 +6,16 @@ A clean Python implementation of the Convex Hull algorithm using divide and conq
 
 ```
 25-algo/
-├── Project1/                    # Test data and helpers
+├── Project1/                    # Main project directory
 │   ├── input.csv               # Sample points (x,y format)
 │   ├── expectedOutput.txt      # Expected results
 │   ├── DisplaySolution.py      # Visualize the hull
-│   └── project1.sh            # Run script
-├── point.py                    # Simple Point class
-├── convex_hull.py             # Main algorithm
+│   ├── project1.sh            # Run script
+│   ├── point.py               # Simple Point class
+│   ├── convex_hull.py         # Main algorithm
+│   ├── test_convex_hull.py    # Unit tests
+│   └── tasks/                 # Task management
+│       └── tasks-convex-hull-divide-conquer.md
 └── README.md                  # This file
 ```
 
@@ -36,6 +39,7 @@ Pretty straightforward divide and conquer:
 ## Running it
 
 ```bash
+cd Project1
 python3 convex_hull.py
 ```
 
@@ -50,6 +54,7 @@ Check it out with the included test data:
 - `input.csv`: 50 sample points
 - `expectedOutput.txt`: What the output should look like
 - `DisplaySolution.py`: Visualize your results
+- `test_convex_hull.py`: Run unit tests with `python3 test_convex_hull.py`
 
 ## Performance
 
