@@ -30,8 +30,23 @@ def parse_input_file(filename: str) -> list[Point]:
                     if len(parts) != 2:
                         raise ValueError(f"Line {line_num}: Expected format 'x,y', got '{line}'")
                     
-                    x = float(parts[0].strip())
-                    y = float(parts[1].strip())
+                    x_str = parts[0].strip()
+                    y_str = parts[1].strip()
+                    
+                    # Validate that coordinates are not empty
+                    if not x_str or not y_str:
+                        raise ValueError(f"Line {line_num}: Empty coordinates in '{line}'")
+                    
+                    # Parse coordinates
+                    x = float(x_str)
+                    y = float(y_str)
+                    
+                    # Check for NaN or infinity values
+                    if not (x == x and y == y):  # NaN check
+                        raise ValueError(f"Line {line_num}: NaN values not allowed in '{line}'")
+                    if abs(x) == float('inf') or abs(y) == float('inf'):
+                        raise ValueError(f"Line {line_num}: Infinite values not allowed in '{line}'")
+                    
                     points.append(Point(x, y))
                     
                 except ValueError as e:
@@ -42,9 +57,20 @@ def parse_input_file(filename: str) -> list[Point]:
                         
     except FileNotFoundError:
         raise FileNotFoundError(f"Input file '{filename}' not found")
+    except PermissionError:
+        raise PermissionError(f"Permission denied reading file '{filename}'")
     
+    # Validate minimum point count
     if len(points) < 3:
         raise ValueError(f"At least 3 points required for convex hull, got {len(points)}")
+    
+    # Check for duplicate points
+    seen_points = set()
+    for i, point in enumerate(points):
+        point_tuple = (point.x, point.y)
+        if point_tuple in seen_points:
+            raise ValueError(f"Duplicate point found at index {i}: ({point.x}, {point.y})")
+        seen_points.add(point_tuple)
     
     return points
 

@@ -21,7 +21,7 @@
 - [ ] 1.0 Create Point Data Structure and Input Parsing
   - [x] 1.1 Create Point dataclass with x and y coordinates using @dataclass decorator
   - [x] 1.2 Implement input parsing function to read CSV file and create Point objects
-  - [ ] 1.3 Add input validation to ensure points are properly formatted
+  - [x] 1.3 Add input validation to ensure points are properly formatted
   - [ ] 1.4 Create helper function to find rightmost and leftmost points in a hull
   - [ ] 1.5 Write unit tests for Point class and input parsing functions
 
