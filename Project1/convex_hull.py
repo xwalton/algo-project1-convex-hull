@@ -231,6 +231,79 @@ def point_is_above_line(p1: Point, p2: Point, q: Point) -> bool:
     return q.y > y_line
 
 
+def find_lower_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, int]:
+    """
+    Find the lower tangent between two convex hulls.
+    
+    The lower tangent is the line that connects the two hulls and lies below all other points
+    in both hulls. This is used in the hull merging process.
+    
+    Args:
+        hull_a (list[Point]): First convex hull (points in counterclockwise order)
+        hull_b (list[Point]): Second convex hull (points in counterclockwise order)
+        
+    Returns:
+        tuple[int, int]: Indices (a_idx, b_idx) of the tangent points in hull_a and hull_b
+        
+    Raises:
+        ValueError: If either hull is empty or has fewer than 2 points
+    """
+    if not hull_a or not hull_b:
+        raise ValueError("Both hulls must be non-empty")
+    
+    if len(hull_a) < 2 or len(hull_b) < 2:
+        raise ValueError("Both hulls must have at least 2 points")
+    
+    # Start with rightmost point of hull_a and leftmost point of hull_b
+    a_idx = find_rightmost_point(hull_a)
+    b_idx = find_leftmost_point(hull_b)
+    
+    # Find the lower tangent by moving points until tangent is found
+    improved = True
+    while improved:
+        improved = False
+        
+        # Move point a clockwise on hull_a until tangent is valid
+        while True:
+            next_a = (a_idx - 1) % len(hull_a)
+            
+            # Check if moving to next_a would improve the tangent
+            # A tangent is valid if all other points in hull_b are above the line
+            valid = True
+            for i in range(len(hull_b)):
+                if i != b_idx:
+                    if not point_is_above_line(hull_a[next_a], hull_b[b_idx], hull_b[i]):
+                        valid = False
+                        break
+            
+            if valid:
+                a_idx = next_a
+                improved = True
+            else:
+                break
+        
+        # Move point b counterclockwise on hull_b until tangent is valid
+        while True:
+            next_b = (b_idx + 1) % len(hull_b)
+            
+            # Check if moving to next_b would improve the tangent
+            # A tangent is valid if all other points in hull_a are above the line
+            valid = True
+            for i in range(len(hull_a)):
+                if i != a_idx:
+                    if not point_is_above_line(hull_a[a_idx], hull_b[next_b], hull_a[i]):
+                        valid = False
+                        break
+            
+            if valid:
+                b_idx = next_b
+                improved = True
+            else:
+                break
+    
+    return (a_idx, b_idx)
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -318,6 +391,7 @@ def main():
                 
             except Exception as e:
                 print(f"✗ PointIsAboveLine test failed: {e}")
+            
         
         # TODO: Implement convex hull algorithm
         # TODO: Write output to output.txt
