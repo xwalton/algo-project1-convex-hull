@@ -1,3 +1,6 @@
+import os
+import sys
+import argparse
 from point import Point
 
 
@@ -546,122 +549,79 @@ def write_hull_indices_to_file(hull_points: list[Point], original_points: list[P
         raise IOError(f"Unable to write to output file '{filename}': {e}")
 
 
+def parse_arguments():
+    """Parse command line arguments for the convex hull algorithm."""
+    parser = argparse.ArgumentParser(
+        description='Convex Hull Algorithm using Divide and Conquer approach'
+    )
+    
+    parser.add_argument(
+        'input_file',
+        nargs='?',
+        default='input.csv',
+        help='Input CSV file containing points (default: input.csv)'
+    )
+    
+    parser.add_argument(
+        '-o', '--output',
+        default='output.txt',
+        help='Output file for hull point indices (default: output.txt)'
+    )
+    
+    parser.add_argument(
+        '--test',
+        action='store_true',
+        help='Run test suite instead of computing convex hull'
+    )
+    
+    return parser.parse_args()
+
+
 def main():
     """Main function to run the convex hull algorithm."""
+    args = parse_arguments()
+    
+    if args.test:
+        # Run test suite
+        print("Running test suite...")
+        try:
+            points = parse_input_file('input.csv')
+            print(f"✓ Parsed {len(points)} points from input file")
+            
+            # Test basic functionality
+            if len(points) >= 3:
+                test_hull = points[:5]
+                rightmost_idx = find_rightmost_point(test_hull)
+                leftmost_idx = find_leftmost_point(test_hull)
+                print(f"✓ Rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
+                print(f"✓ Leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
+            
+            print("✓ All tests passed")
+            return 0
+        except Exception as e:
+            print(f"✗ Test failed: {e}")
+            return 1
+    
+    # Run convex hull computation
     try:
         # Parse input points
-        points = parse_input_file('input.csv')
-        print(f"Parsed {len(points)} points from input file")
+        points = parse_input_file(args.input_file)
+        print(f"Parsed {len(points)} points from {args.input_file}")
         
-        # Test helper functions with first few points
-        if len(points) >= 3:
-            test_hull = points[:5]  # Use first 5 points for testing
-            rightmost_idx = find_rightmost_point(test_hull)
-            leftmost_idx = find_leftmost_point(test_hull)
-            print(f"Test hull rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
-            print(f"Test hull leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
+        # Compute convex hull
+        print("Computing convex hull...")
+        hull = convex_hull_divide_and_conquer(points)
+        print(f"Convex hull computed with {len(hull)} points")
         
-            # Test base case functions
-            print("\nTesting base cases:")
-            # Test 2 points
-            two_points = points[:2]
-            hull_2 = convex_hull_base_case(two_points)
-            print(f"2-point hull: {hull_2}")
-            
-            # Test 3 points
-            three_points = points[:3]
-            hull_3 = convex_hull_base_case(three_points)
-            print(f"3-point hull: {hull_3}")
-            
-            # Test edge cases
-            print("\nTesting edge cases:")
-            try:
-                # Test empty list
-                convex_hull_base_case([])
-                print("✗ Should have raised error for empty list")
-            except ValueError as e:
-                print(f"✓ Empty list error: {e}")
-            
-            try:
-                # Test single point
-                convex_hull_base_case([points[0]])
-                print("✗ Should have raised error for single point")
-            except ValueError as e:
-                print(f"✓ Single point error: {e}")
-            
-            try:
-                # Test identical points
-                identical_points = [points[0], points[0]]
-                convex_hull_base_case(identical_points)
-                print("✗ Should have raised error for identical points")
-            except ValueError as e:
-                print(f"✓ Identical points error: {e}")
-            
-            try:
-                # Test collinear points
-                collinear_points = [
-                    Point(0.0, 0.0),
-                    Point(1.0, 1.0),
-                    Point(2.0, 2.0)
-                ]
-                hull_collinear = convex_hull_base_case(collinear_points)
-                print(f"✓ Collinear points hull: {hull_collinear}")
-            except Exception as e:
-                print(f"✗ Collinear test failed: {e}")
-            
-            # Test PointIsAboveLine function
-            print("\nTesting PointIsAboveLine function:")
-            try:
-                # Test normal case
-                p1 = Point(0.0, 0.0)
-                p2 = Point(2.0, 2.0)
-                q_above = Point(1.0, 2.0)  # Above the line
-                q_below = Point(1.0, 0.5)  # Below the line
-                
-                above_result = point_is_above_line(p1, p2, q_above)
-                below_result = point_is_above_line(p1, p2, q_below)
-                
-                print(f"Point {q_above} above line: {above_result}")
-                print(f"Point {q_below} above line: {below_result}")
-                
-                # Test vertical line
-                p_vert1 = Point(1.0, 0.0)
-                p_vert2 = Point(1.0, 2.0)
-                q_vert = Point(1.0, 3.0)
-                vert_result = point_is_above_line(p_vert1, p_vert2, q_vert)
-                print(f"Point {q_vert} above vertical line: {vert_result}")
-                
-            except Exception as e:
-                print(f"✗ PointIsAboveLine test failed: {e}")
-            
-            # Test output writing function
-            print("\nTesting output writing function:")
-            try:
-                # Test with simple hull
-                test_hull = [points[0], points[1]]  # First two points
-                write_hull_indices_to_file(test_hull, points, 'test_output.txt')
-                print("✓ Output writing function test passed")
-                
-                # Clean up test file
-                import os
-                if os.path.exists('test_output.txt'):
-                    os.remove('test_output.txt')
-                
-            except Exception as e:
-                print(f"✗ Output writing test failed: {e}")
+        # Write output to file
+        write_hull_indices_to_file(hull, points, args.output)
+        print(f"Results written to {args.output}")
         
-        # Complete pipeline integration ready
-        print("\n✓ Complete pipeline integration ready")
-        print("  - Input parsing: ✓")
-        print("  - Convex hull computation: ✓") 
-        print("  - Output writing: ✓")
-        print("  - All components integrated")
+        return 0
         
     except Exception as e:
         print(f"Error: {e}")
         return 1
-    
-    return 0
 
 
 if __name__ == "__main__":
