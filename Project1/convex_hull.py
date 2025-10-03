@@ -125,7 +125,7 @@ def find_leftmost_point(hull: list[Point]) -> int:
 
 def convex_hull_base_case(points: list[Point]) -> list[Point]:
     """
-    Handle base cases for convex hull computation.
+    Handle base cases for convex hull computation with comprehensive edge case validation.
     
     Args:
         points (list[Point]): List of 2 or 3 points
@@ -134,32 +134,56 @@ def convex_hull_base_case(points: list[Point]) -> list[Point]:
         list[Point]: Convex hull points in order
         
     Raises:
-        ValueError: If points list has invalid size
+        ValueError: If points list has invalid size or contains invalid points
     """
+    # Validate input
+    if not points:
+        raise ValueError("Cannot compute convex hull of empty point set")
+    
+    if len(points) < 2:
+        raise ValueError(f"Convex hull requires at least 2 points, got {len(points)}")
+    
+    if len(points) > 3:
+        raise ValueError(f"Base case handles at most 3 points, got {len(points)}")
+    
+    # Validate that all points are valid
+    for i, point in enumerate(points):
+        if not isinstance(point, Point):
+            raise ValueError(f"Point at index {i} is not a Point object")
+        if not (point.x == point.x and point.y == point.y):  # NaN check
+            raise ValueError(f"Point at index {i} contains NaN values")
+        if abs(point.x) == float('inf') or abs(point.y) == float('inf'):
+            raise ValueError(f"Point at index {i} contains infinite values")
+    
     if len(points) == 2:
         # For 2 points, return them in order (line segment)
+        # Handle edge case where points are identical
+        p1, p2 = points[0], points[1]
+        if p1.x == p2.x and p1.y == p2.y:
+            raise ValueError("Cannot compute convex hull of identical points")
         return points.copy()
     
     elif len(points) == 3:
         # For 3 points, determine if they form a triangle or are collinear
         p1, p2, p3 = points[0], points[1], points[2]
         
+        # Check for duplicate points
+        if (p1.x == p2.x and p1.y == p2.y) or \
+           (p1.x == p3.x and p1.y == p3.y) or \
+           (p2.x == p3.x and p2.y == p3.y):
+            raise ValueError("Cannot compute convex hull with duplicate points")
+        
         # Calculate cross product to determine orientation
         # (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
         cross_product = (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x)
         
-        if abs(cross_product) < 1e-10:  # Points are collinear
-            # Return the two extreme points
-            if p1.x < p2.x or (p1.x == p2.x and p1.y < p2.y):
-                if p2.x < p3.x or (p2.x == p3.x and p2.y < p3.y):
-                    return [p1, p3]  # p1 and p3 are extremes
-                else:
-                    return [p1, p2]  # p1 and p2 are extremes
-            else:
-                if p1.x < p3.x or (p1.x == p3.x and p1.y < p3.y):
-                    return [p2, p3]  # p2 and p3 are extremes
-                else:
-                    return [p1, p2]  # p1 and p2 are extremes
+        # Use a more robust tolerance for collinearity check
+        tolerance = 1e-12
+        if abs(cross_product) < tolerance:  # Points are collinear
+            # Find the two extreme points (leftmost and rightmost)
+            # Sort by x-coordinate, then by y-coordinate for ties
+            sorted_points = sorted(points, key=lambda p: (p.x, p.y))
+            return [sorted_points[0], sorted_points[2]]  # Return extremes
         else:
             # Points form a triangle, return all three in counterclockwise order
             if cross_product > 0:
@@ -168,9 +192,6 @@ def convex_hull_base_case(points: list[Point]) -> list[Point]:
             else:
                 # Clockwise order, reverse to get counterclockwise
                 return [p1, p3, p2]
-    
-    else:
-        raise ValueError(f"Base case requires 2 or 3 points, got {len(points)}")
 
 
 def main():
@@ -199,6 +220,42 @@ def main():
             three_points = points[:3]
             hull_3 = convex_hull_base_case(three_points)
             print(f"3-point hull: {hull_3}")
+            
+            # Test edge cases
+            print("\nTesting edge cases:")
+            try:
+                # Test empty list
+                convex_hull_base_case([])
+                print("✗ Should have raised error for empty list")
+            except ValueError as e:
+                print(f"✓ Empty list error: {e}")
+            
+            try:
+                # Test single point
+                convex_hull_base_case([points[0]])
+                print("✗ Should have raised error for single point")
+            except ValueError as e:
+                print(f"✓ Single point error: {e}")
+            
+            try:
+                # Test identical points
+                identical_points = [points[0], points[0]]
+                convex_hull_base_case(identical_points)
+                print("✗ Should have raised error for identical points")
+            except ValueError as e:
+                print(f"✓ Identical points error: {e}")
+            
+            try:
+                # Test collinear points
+                collinear_points = [
+                    Point(0.0, 0.0),
+                    Point(1.0, 1.0),
+                    Point(2.0, 2.0)
+                ]
+                hull_collinear = convex_hull_base_case(collinear_points)
+                print(f"✓ Collinear points hull: {hull_collinear}")
+            except Exception as e:
+                print(f"✗ Collinear test failed: {e}")
         
         # TODO: Implement convex hull algorithm
         # TODO: Write output to output.txt

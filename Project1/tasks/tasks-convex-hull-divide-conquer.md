@@ -28,7 +28,7 @@
 - [ ] 2.0 Implement Base Case Handling for Small Point Sets
   - [x] 2.1 Implement ConvexHullBaseCase function for 2 points (returns line segment)
   - [x] 2.2 Implement ConvexHullBaseCase function for 3 points (returns triangle)
-  - [ ] 2.3 Add validation to ensure base cases handle edge cases correctly
+  - [x] 2.3 Add validation to ensure base cases handle edge cases correctly
   - [ ] 2.4 Write unit tests for base case scenarios
 
 - [ ] 3.0 Implement Hull Merging Algorithm
