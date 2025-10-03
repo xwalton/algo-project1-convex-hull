@@ -467,6 +467,42 @@ def convex_hull_recursive(points: list[Point]) -> list[Point]:
     return merged_hull
 
 
+def convex_hull_divide_and_conquer(points: list[Point]) -> list[Point]:
+    """
+    Main entry point for the convex hull divide and conquer algorithm.
+    
+    This function implements the complete divide and conquer convex hull algorithm:
+    1. Sort points by x-coordinate (O(n log n))
+    2. Call the recursive convex hull function
+    3. Return the final convex hull
+    
+    Args:
+        points (list[Point]): List of points to compute convex hull for
+        
+    Returns:
+        list[Point]: Convex hull points in counterclockwise order
+        
+    Raises:
+        ValueError: If points list is empty or has fewer than 2 points
+    """
+    if not points:
+        raise ValueError("Cannot compute convex hull of empty point set")
+    
+    if len(points) < 2:
+        raise ValueError("Convex hull requires at least 2 points")
+    
+    # Step 1: Sort points by x-coordinate (O(n log n))
+    # Note: According to the project requirements, points are already sorted by x-coordinate
+    # But we'll ensure they are sorted for robustness
+    sorted_points = sorted(points, key=lambda p: (p.x, p.y))
+    
+    # Step 2: Call the recursive convex hull function
+    hull = convex_hull_recursive(sorted_points)
+    
+    # Step 3: Return the final convex hull
+    return hull
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -481,7 +517,7 @@ def main():
             leftmost_idx = find_leftmost_point(test_hull)
             print(f"Test hull rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
             print(f"Test hull leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
-            
+        
             # Test base case functions
             print("\nTesting base cases:")
             # Test 2 points
@@ -556,7 +592,6 @@ def main():
                 print(f"✗ PointIsAboveLine test failed: {e}")
             
         
-        # TODO: Implement main convex hull algorithm
         # TODO: Write output to output.txt
         
     except Exception as e:
