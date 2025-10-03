@@ -1,62 +1,58 @@
-# Convex Hull Divide and Conquer Algorithm
+# Convex Hull Algorithm
 
-A Python implementation of the Convex Hull algorithm using the Divide and Conquer approach with O(n log n) complexity.
+A clean Python implementation of the Convex Hull algorithm using divide and conquer. Fast and efficient!
 
-## Project Structure
+## What's in here
 
 ```
 25-algo/
-├── Project1/                    # Project files and test data
-│   ├── input.csv               # Input points (x,y format)
-│   ├── expectedOutput.txt      # Expected output indices
-│   ├── DisplaySolution.py      # Visualization helper
-│   └── project1.sh            # Execution script
-├── tasks/                      # Task management
-│   └── tasks-convex-hull-divide-conquer.md
-├── point.py                    # Point class definition
-├── convex_hull.py             # Main algorithm implementation
+├── Project1/                    # Test data and helpers
+│   ├── input.csv               # Sample points (x,y format)
+│   ├── expectedOutput.txt      # Expected results
+│   ├── DisplaySolution.py      # Visualize the hull
+│   └── project1.sh            # Run script
+├── point.py                    # Simple Point class
+├── convex_hull.py             # Main algorithm
 └── README.md                  # This file
 ```
 
-## Algorithm Overview
+## How it works
 
-The implementation follows the divide and conquer approach:
+Pretty straightforward divide and conquer:
 
-1. **Sort points by x-coordinate** (O(n log n))
-2. **Divide** the point set into two halves
-3. **Recursively compute** convex hulls for each half
-4. **Merge** the two hulls using tangent finding (O(n))
+1. **Sort** points by x-coordinate 
+2. **Split** into two halves
+3. **Recurse** on each half
+4. **Merge** the hulls together
 
-## Key Components
+## Key stuff
 
-- **Point Class**: Represents 2D coordinates with minimal dependencies
-- **Input Parsing**: Reads CSV files and creates Point objects
-- **Base Cases**: Handles 2 and 3 point scenarios
-- **Hull Merging**: Implements tangent finding for hull combination
-- **Output Generation**: Writes hull point indices to output.txt
+- **Point Class**: Just x,y coordinates, nothing fancy
+- **Input Parsing**: Reads CSV and makes Point objects
+- **Base Cases**: Handles 2-3 points easily
+- **Hull Merging**: Finds tangents to combine hulls
+- **Output**: Writes hull point indices to output.txt
 
-## Usage
+## Running it
 
 ```bash
 python3 convex_hull.py
 ```
 
-## Requirements
+## What you need
 
-- Python 3.6+
-- No external dependencies (minimal imports approach)
+- Python 3.6+ (just the standard library)
+- That's it! No extra packages
 
 ## Testing
 
-The project includes comprehensive unit tests and integration tests to verify:
-- Point creation and manipulation
-- Input parsing with error handling
-- Base case scenarios (2-3 points)
-- Hull merging algorithms
-- Complete divide and conquer implementation
+Check it out with the included test data:
+- `input.csv`: 50 sample points
+- `expectedOutput.txt`: What the output should look like
+- `DisplaySolution.py`: Visualize your results
 
 ## Performance
 
-- **Time Complexity**: O(n log n)
-- **Space Complexity**: O(n)
-- **Handles**: Up to 1 million points efficiently
+- **Time**: O(n log n) - pretty fast!
+- **Space**: O(n) - memory efficient
+- **Scale**: Handles up to 1 million points no problem
