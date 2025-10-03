@@ -51,6 +51,6 @@
   - [x] 5.1 Implement output writing function to generate output.txt with hull point indices
   - [x] 5.2 Create main execution function that reads input, computes hull, and writes output
   - [x] 5.3 Add command-line interface for running the algorithm
-  - [ ] 5.4 Verify output format matches expected format (one index per line)
+  - [x] 5.4 Verify output format matches expected format (one index per line)
   - [ ] 5.5 Test with provided input.csv and verify against expectedOutput.txt
   - [ ] 5.6 Write integration tests for the complete pipeline

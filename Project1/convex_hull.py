@@ -540,11 +540,13 @@ def write_hull_indices_to_file(hull_points: list[Point], original_points: list[P
             # If hull point not found in original points, this is an error
             raise ValueError(f"Hull point {hull_point} not found in original points")
     
-    # Write indices to file
+    # Write indices to file (one index per line, with empty line at end)
     try:
         with open(filename, 'w') as file:
             for index in hull_indices:
                 file.write(f"{index}\n")
+            # Add empty line at the end to match expected format
+            file.write("\n")
     except IOError as e:
         raise IOError(f"Unable to write to output file '{filename}': {e}")
 
