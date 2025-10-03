@@ -1,5 +1,5 @@
 from point import Point
-from convex_hull import parse_input_file, find_rightmost_point, find_leftmost_point
+from convex_hull import parse_input_file, find_rightmost_point, find_leftmost_point, convex_hull_base_case
 
 
 def test_point_creation():
@@ -125,6 +125,116 @@ def test_edge_cases():
     return True
 
 
+def test_base_case_scenarios():
+    """Test base case scenarios for convex hull computation."""
+    print("Testing base case scenarios...")
+    
+    # Test 2 points - normal case
+    two_points = [Point(0.0, 0.0), Point(1.0, 1.0)]
+    hull_2 = convex_hull_base_case(two_points)
+    assert len(hull_2) == 2
+    assert hull_2[0].x == 0.0 and hull_2[0].y == 0.0
+    assert hull_2[1].x == 1.0 and hull_2[1].y == 1.0
+    print("✓ 2-point normal case passed")
+    
+    # Test 2 points - identical points (should raise error)
+    try:
+        identical_points = [Point(1.0, 1.0), Point(1.0, 1.0)]
+        convex_hull_base_case(identical_points)
+        print("✗ Should have raised error for identical points")
+        return False
+    except ValueError as e:
+        assert "identical points" in str(e).lower()
+        print("✓ 2-point identical points error handling passed")
+    
+    # Test 3 points - triangle (counterclockwise)
+    triangle_points = [Point(0.0, 0.0), Point(1.0, 0.0), Point(0.5, 1.0)]
+    hull_3 = convex_hull_base_case(triangle_points)
+    assert len(hull_3) == 3
+    print("✓ 3-point triangle case passed")
+    
+    # Test 3 points - collinear
+    collinear_points = [Point(0.0, 0.0), Point(1.0, 1.0), Point(2.0, 2.0)]
+    hull_collinear = convex_hull_base_case(collinear_points)
+    assert len(hull_collinear) == 2  # Should return only extremes
+    assert hull_collinear[0].x == 0.0 and hull_collinear[0].y == 0.0
+    assert hull_collinear[1].x == 2.0 and hull_collinear[1].y == 2.0
+    print("✓ 3-point collinear case passed")
+    
+    # Test 3 points - duplicate points (should raise error)
+    try:
+        duplicate_points = [Point(0.0, 0.0), Point(1.0, 1.0), Point(0.0, 0.0)]
+        convex_hull_base_case(duplicate_points)
+        print("✗ Should have raised error for duplicate points")
+        return False
+    except ValueError as e:
+        assert "duplicate points" in str(e).lower()
+        print("✓ 3-point duplicate points error handling passed")
+    
+    # Test edge cases
+    try:
+        convex_hull_base_case([])
+        print("✗ Should have raised error for empty list")
+        return False
+    except ValueError as e:
+        assert "empty point set" in str(e).lower()
+        print("✓ Empty list error handling passed")
+    
+    try:
+        convex_hull_base_case([Point(1.0, 1.0)])
+        print("✗ Should have raised error for single point")
+        return False
+    except ValueError as e:
+        assert "at least 2 points" in str(e).lower()
+        print("✓ Single point error handling passed")
+    
+    try:
+        convex_hull_base_case([Point(1.0, 1.0), Point(2.0, 2.0), Point(3.0, 3.0), Point(4.0, 4.0)])
+        print("✗ Should have raised error for too many points")
+        return False
+    except ValueError as e:
+        assert "at most 3 points" in str(e).lower()
+        print("✓ Too many points error handling passed")
+    
+    # Test with invalid Point objects
+    try:
+        convex_hull_base_case([Point(1.0, 1.0), "not a point"])
+        print("✗ Should have raised error for invalid Point object")
+        return False
+    except ValueError as e:
+        if "not a point object" in str(e).lower():
+            print("✓ Invalid Point object error handling passed")
+        else:
+            print(f"✗ Unexpected error message: {e}")
+            return False
+    except TypeError:
+        # This might also raise TypeError depending on implementation
+        print("✓ Invalid Point object error handling passed (TypeError)")
+    
+    # Test with NaN values
+    try:
+        import math
+        nan_point = Point(float('nan'), 1.0)
+        convex_hull_base_case([Point(1.0, 1.0), nan_point])
+        print("✗ Should have raised error for NaN values")
+        return False
+    except ValueError as e:
+        assert "nan values" in str(e).lower()
+        print("✓ NaN values error handling passed")
+    
+    # Test with infinity values
+    try:
+        inf_point = Point(float('inf'), 1.0)
+        convex_hull_base_case([Point(1.0, 1.0), inf_point])
+        print("✗ Should have raised error for infinity values")
+        return False
+    except ValueError as e:
+        assert "infinite values" in str(e).lower()
+        print("✓ Infinity values error handling passed")
+    
+    return True
+
+
 def run_all_tests():
     """Run all unit tests."""
     print("Running unit tests for convex hull implementation...\n")
@@ -142,6 +252,10 @@ def run_all_tests():
         print()
         
         if not test_edge_cases():
+            return False
+        print()
+        
+        if not test_base_case_scenarios():
             return False
         print()
         

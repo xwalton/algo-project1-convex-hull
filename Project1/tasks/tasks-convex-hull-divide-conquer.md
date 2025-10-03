@@ -25,11 +25,11 @@
   - [x] 1.4 Create helper function to find rightmost and leftmost points in a hull
   - [x] 1.5 Write unit tests for Point class and input parsing functions
 
-- [ ] 2.0 Implement Base Case Handling for Small Point Sets
+- [x] 2.0 Implement Base Case Handling for Small Point Sets
   - [x] 2.1 Implement ConvexHullBaseCase function for 2 points (returns line segment)
   - [x] 2.2 Implement ConvexHullBaseCase function for 3 points (returns triangle)
   - [x] 2.3 Add validation to ensure base cases handle edge cases correctly
-  - [ ] 2.4 Write unit tests for base case scenarios
+  - [x] 2.4 Write unit tests for base case scenarios
 
 - [ ] 3.0 Implement Hull Merging Algorithm
   - [ ] 3.1 Implement PointIsAboveLine helper function for tangent validation
