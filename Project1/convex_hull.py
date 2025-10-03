@@ -377,6 +377,55 @@ def find_upper_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, i
     return (a_idx, b_idx)
 
 
+def merge_hulls(hull_a: list[Point], hull_b: list[Point]) -> list[Point]:
+    """
+    Merge two convex hulls using tangent finding.
+    
+    This function combines two separate convex hulls into a single convex hull
+    by finding the upper and lower tangents and connecting them.
+    
+    Args:
+        hull_a (list[Point]): First convex hull (points in counterclockwise order)
+        hull_b (list[Point]): Second convex hull (points in counterclockwise order)
+        
+    Returns:
+        list[Point]: Merged convex hull in counterclockwise order
+        
+    Raises:
+        ValueError: If either hull is empty or has fewer than 2 points
+    """
+    if not hull_a or not hull_b:
+        raise ValueError("Both hulls must be non-empty")
+    
+    if len(hull_a) < 2 or len(hull_b) < 2:
+        raise ValueError("Both hulls must have at least 2 points")
+    
+    # Find the upper and lower tangents
+    upper_a_idx, upper_b_idx = find_upper_tangent(hull_a, hull_b)
+    lower_a_idx, lower_b_idx = find_lower_tangent(hull_a, hull_b)
+    
+    # Build the merged hull by traversing from lower tangent to upper tangent
+    merged_hull = []
+    
+    # Add points from hull_a from lower tangent to upper tangent (counterclockwise)
+    current_idx = lower_a_idx
+    while True:
+        merged_hull.append(hull_a[current_idx])
+        if current_idx == upper_a_idx:
+            break
+        current_idx = (current_idx + 1) % len(hull_a)
+    
+    # Add points from hull_b from upper tangent to lower tangent (counterclockwise)
+    current_idx = upper_b_idx
+    while True:
+        merged_hull.append(hull_b[current_idx])
+        if current_idx == lower_b_idx:
+            break
+        current_idx = (current_idx + 1) % len(hull_b)
+    
+    return merged_hull
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
