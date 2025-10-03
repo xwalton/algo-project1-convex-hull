@@ -127,7 +127,7 @@ def main():
     """Main function to run the convex hull algorithm."""
     try:
         # Parse input points
-        points = parse_input_file('Project1/input.csv')
+        points = parse_input_file('input.csv')
         print(f"Parsed {len(points)} points from input file")
         
         # Test helper functions with first few points

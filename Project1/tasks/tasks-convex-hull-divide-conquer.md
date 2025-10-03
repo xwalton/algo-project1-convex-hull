@@ -22,7 +22,7 @@
   - [x] 1.1 Create Point dataclass with x and y coordinates using @dataclass decorator
   - [x] 1.2 Implement input parsing function to read CSV file and create Point objects
   - [x] 1.3 Add input validation to ensure points are properly formatted
-  - [ ] 1.4 Create helper function to find rightmost and leftmost points in a hull
+  - [x] 1.4 Create helper function to find rightmost and leftmost points in a hull
   - [ ] 1.5 Write unit tests for Point class and input parsing functions
 
 - [ ] 2.0 Implement Base Case Handling for Small Point Sets
