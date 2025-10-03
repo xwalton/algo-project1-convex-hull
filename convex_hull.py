@@ -75,12 +75,68 @@ def parse_input_file(filename: str) -> list[Point]:
     return points
 
 
+def find_rightmost_point(hull: list[Point]) -> int:
+    """
+    Find the index of the rightmost point in a convex hull.
+    
+    Args:
+        hull (list[Point]): List of points forming a convex hull
+        
+    Returns:
+        int: Index of the rightmost point (highest x-coordinate)
+    """
+    if not hull:
+        raise ValueError("Cannot find rightmost point in empty hull")
+    
+    rightmost_idx = 0
+    for i in range(1, len(hull)):
+        if hull[i].x > hull[rightmost_idx].x:
+            rightmost_idx = i
+        elif hull[i].x == hull[rightmost_idx].x and hull[i].y > hull[rightmost_idx].y:
+            # If x-coordinates are equal, choose the one with higher y-coordinate
+            rightmost_idx = i
+    
+    return rightmost_idx
+
+
+def find_leftmost_point(hull: list[Point]) -> int:
+    """
+    Find the index of the leftmost point in a convex hull.
+    
+    Args:
+        hull (list[Point]): List of points forming a convex hull
+        
+    Returns:
+        int: Index of the leftmost point (lowest x-coordinate)
+    """
+    if not hull:
+        raise ValueError("Cannot find leftmost point in empty hull")
+    
+    leftmost_idx = 0
+    for i in range(1, len(hull)):
+        if hull[i].x < hull[leftmost_idx].x:
+            leftmost_idx = i
+        elif hull[i].x == hull[leftmost_idx].x and hull[i].y < hull[leftmost_idx].y:
+            # If x-coordinates are equal, choose the one with lower y-coordinate
+            leftmost_idx = i
+    
+    return leftmost_idx
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
         # Parse input points
         points = parse_input_file('Project1/input.csv')
         print(f"Parsed {len(points)} points from input file")
+        
+        # Test helper functions with first few points
+        if len(points) >= 3:
+            test_hull = points[:5]  # Use first 5 points for testing
+            rightmost_idx = find_rightmost_point(test_hull)
+            leftmost_idx = find_leftmost_point(test_hull)
+            print(f"Test hull rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
+            print(f"Test hull leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
         
         # TODO: Implement convex hull algorithm
         # TODO: Write output to output.txt
