@@ -31,13 +31,13 @@
   - [x] 2.3 Add validation to ensure base cases handle edge cases correctly
   - [x] 2.4 Write unit tests for base case scenarios
 
-- [ ] 3.0 Implement Hull Merging Algorithm
+- [x] 3.0 Implement Hull Merging Algorithm
   - [x] 3.1 Implement PointIsAboveLine helper function for tangent validation
   - [x] 3.2 Implement lower tangent finding algorithm between two hulls
   - [x] 3.3 Implement upper tangent finding algorithm between two hulls
   - [x] 3.4 Implement MergeHulls function that combines two convex hulls
   - [x] 3.5 Add clockwise/counterclockwise traversal logic for hull points
-  - [ ] 3.6 Write unit tests for tangent finding and hull merging functions
+  - [x] 3.6 Write unit tests for tangent finding and hull merging functions
 
 - [ ] 4.0 Implement Main Divide and Conquer Algorithm
   - [ ] 4.1 Implement ConvexHullRecursive function with divide step

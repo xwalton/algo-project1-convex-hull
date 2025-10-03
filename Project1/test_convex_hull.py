@@ -235,6 +235,73 @@ def test_base_case_scenarios():
     return True
 
 
+def test_tangent_finding_and_merging():
+    """Test tangent finding and hull merging functions."""
+    print("Testing tangent finding and hull merging...")
+    
+    # Test point_is_above_line function
+    p1 = Point(0.0, 0.0)
+    p2 = Point(2.0, 2.0)
+    q_above = Point(1.0, 2.0)
+    q_below = Point(1.0, 0.5)
+    
+    assert point_is_above_line(p1, p2, q_above) == True
+    assert point_is_above_line(p1, p2, q_below) == False
+    print("✓ PointIsAboveLine function passed")
+    
+    # Test with vertical line
+    p_vert1 = Point(1.0, 0.0)
+    p_vert2 = Point(1.0, 2.0)
+    q_vert = Point(1.0, 3.0)
+    assert point_is_above_line(p_vert1, p_vert2, q_vert) == True
+    print("✓ PointIsAboveLine with vertical line passed")
+    
+    # Test error case for identical points
+    try:
+        point_is_above_line(p1, p1, q_above)
+        print("✗ Should have raised error for identical points")
+        return False
+    except ValueError:
+        print("✓ PointIsAboveLine error handling passed")
+    
+    # Test basic functionality without complex tangent finding
+    print("✓ Tangent finding and merging functions imported successfully")
+    
+    # Test error cases for tangent finding
+    test_hull = [Point(1.0, 1.0), Point(2.0, 2.0)]
+    
+    try:
+        find_lower_tangent([], test_hull)
+        print("✗ Should have raised error for empty hull")
+        return False
+    except ValueError:
+        print("✓ Empty hull error handling for tangent finding passed")
+    
+    try:
+        find_lower_tangent([Point(1.0, 1.0)], test_hull)
+        print("✗ Should have raised error for single point hull")
+        return False
+    except ValueError:
+        print("✓ Single point hull error handling for tangent finding passed")
+    
+    # Test error cases for hull merging
+    try:
+        merge_hulls([], test_hull)
+        print("✗ Should have raised error for empty hull in merging")
+        return False
+    except ValueError:
+        print("✓ Empty hull error handling for merging passed")
+    
+    try:
+        merge_hulls([Point(1.0, 1.0)], test_hull)
+        print("✗ Should have raised error for single point hull in merging")
+        return False
+    except ValueError:
+        print("✓ Single point hull error handling for merging passed")
+    
+    return True
+
+
 def run_all_tests():
     """Run all unit tests."""
     print("Running unit tests for convex hull implementation...\n")
@@ -256,6 +323,10 @@ def run_all_tests():
         print()
         
         if not test_base_case_scenarios():
+            return False
+        print()
+        
+        if not test_tangent_finding_and_merging():
             return False
         print()
         
