@@ -47,10 +47,10 @@
   - [x] 4.5 Add proper handling of hull point ordering (clockwise/counterclockwise)
   - [x] 4.6 Write unit tests for the complete divide and conquer algorithm
 
-- [ ] 5.0 Create Output Generation and Integration
+- [x] 5.0 Create Output Generation and Integration
   - [x] 5.1 Implement output writing function to generate output.txt with hull point indices
   - [x] 5.2 Create main execution function that reads input, computes hull, and writes output
   - [x] 5.3 Add command-line interface for running the algorithm
   - [x] 5.4 Verify output format matches expected format (one index per line)
   - [x] 5.5 Test with provided input.csv and verify against expectedOutput.txt
-  - [ ] 5.6 Write integration tests for the complete pipeline
+  - [x] 5.6 Write integration tests for the complete pipeline
