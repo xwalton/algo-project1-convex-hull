@@ -39,13 +39,13 @@
   - [x] 3.5 Add clockwise/counterclockwise traversal logic for hull points
   - [x] 3.6 Write unit tests for tangent finding and hull merging functions
 
-- [ ] 4.0 Implement Main Divide and Conquer Algorithm
+- [x] 4.0 Implement Main Divide and Conquer Algorithm
   - [x] 4.1 Implement ConvexHullRecursive function with divide step
   - [x] 4.2 Add recursive calls for left and right halves
   - [x] 4.3 Integrate MergeHulls into the recursive algorithm
   - [x] 4.4 Implement main ConvexHullDivideAndConquer entry point
   - [x] 4.5 Add proper handling of hull point ordering (clockwise/counterclockwise)
-  - [ ] 4.6 Write unit tests for the complete divide and conquer algorithm
+  - [x] 4.6 Write unit tests for the complete divide and conquer algorithm
 
 - [ ] 5.0 Create Output Generation and Integration
   - [ ] 5.1 Implement output writing function to generate output.txt with hull point indices

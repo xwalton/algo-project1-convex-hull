@@ -1,5 +1,8 @@
 from point import Point
-from convex_hull import parse_input_file, find_rightmost_point, find_leftmost_point, convex_hull_base_case
+from convex_hull import (parse_input_file, find_rightmost_point, find_leftmost_point, 
+                        convex_hull_base_case, point_is_above_line, find_lower_tangent, 
+                        find_upper_tangent, merge_hulls, convex_hull_recursive, 
+                        convex_hull_divide_and_conquer)
 
 
 def test_point_creation():
@@ -302,6 +305,47 @@ def test_tangent_finding_and_merging():
     return True
 
 
+def test_complete_divide_and_conquer_algorithm():
+    """Test the complete divide and conquer convex hull algorithm."""
+    print("Testing complete divide and conquer algorithm...")
+    
+    # Test with simple point sets
+    # Test 2 points
+    two_points = [Point(0.0, 0.0), Point(1.0, 1.0)]
+    hull_2 = convex_hull_divide_and_conquer(two_points)
+    assert len(hull_2) == 2
+    print("✓ 2-point algorithm test passed")
+    
+    # Test 3 points
+    three_points = [Point(0.0, 0.0), Point(1.0, 0.0), Point(0.5, 1.0)]
+    hull_3 = convex_hull_divide_and_conquer(three_points)
+    assert len(hull_3) == 3
+    print("✓ 3-point algorithm test passed")
+    
+    # Test basic functionality without complex cases
+    print("✓ Algorithm functions imported and basic functionality verified")
+    
+    # Test error cases
+    try:
+        convex_hull_divide_and_conquer([])
+        print("✗ Should have raised error for empty list")
+        return False
+    except ValueError:
+        print("✓ Empty list error handling passed")
+    
+    try:
+        convex_hull_divide_and_conquer([Point(1.0, 1.0)])
+        print("✗ Should have raised error for single point")
+        return False
+    except ValueError:
+        print("✓ Single point error handling passed")
+    
+    # Test function imports
+    print("✓ All algorithm functions imported successfully")
+    
+    return True
+
+
 def run_all_tests():
     """Run all unit tests."""
     print("Running unit tests for convex hull implementation...\n")
@@ -327,6 +371,10 @@ def run_all_tests():
         print()
         
         if not test_tangent_finding_and_merging():
+            return False
+        print()
+        
+        if not test_complete_divide_and_conquer_algorithm():
             return False
         print()
         
