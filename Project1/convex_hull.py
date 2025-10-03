@@ -426,6 +426,47 @@ def merge_hulls(hull_a: list[Point], hull_b: list[Point]) -> list[Point]:
     return merged_hull
 
 
+def convex_hull_recursive(points: list[Point]) -> list[Point]:
+    """
+    Recursively compute the convex hull using divide and conquer approach.
+    
+    This function implements the main divide and conquer algorithm:
+    1. If points <= 3, use base case
+    2. Divide points into two halves
+    3. Recursively compute hulls for each half
+    4. Merge the two hulls
+    
+    Args:
+        points (list[Point]): List of points sorted by x-coordinate
+        
+    Returns:
+        list[Point]: Convex hull points in counterclockwise order
+        
+    Raises:
+        ValueError: If points list is empty or invalid
+    """
+    if not points:
+        raise ValueError("Cannot compute convex hull of empty point set")
+    
+    # Base case: use base case function for small point sets
+    if len(points) <= 3:
+        return convex_hull_base_case(points)
+    
+    # Divide step: split points into two halves
+    mid = len(points) // 2
+    left_points = points[:mid]
+    right_points = points[mid:]
+    
+    # Recursively compute convex hulls for each half
+    left_hull = convex_hull_recursive(left_points)
+    right_hull = convex_hull_recursive(right_points)
+    
+    # Merge the two hulls
+    merged_hull = merge_hulls(left_hull, right_hull)
+    
+    return merged_hull
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -515,7 +556,7 @@ def main():
                 print(f"✗ PointIsAboveLine test failed: {e}")
             
         
-        # TODO: Implement convex hull algorithm
+        # TODO: Implement main convex hull algorithm
         # TODO: Write output to output.txt
         
     except Exception as e:

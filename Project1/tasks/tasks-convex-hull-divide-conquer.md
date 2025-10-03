@@ -40,7 +40,7 @@
   - [x] 3.6 Write unit tests for tangent finding and hull merging functions
 
 - [ ] 4.0 Implement Main Divide and Conquer Algorithm
-  - [ ] 4.1 Implement ConvexHullRecursive function with divide step
+  - [x] 4.1 Implement ConvexHullRecursive function with divide step
   - [ ] 4.2 Add recursive calls for left and right halves
   - [ ] 4.3 Integrate MergeHulls into the recursive algorithm
   - [ ] 4.4 Implement main ConvexHullDivideAndConquer entry point
