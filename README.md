@@ -16,7 +16,7 @@ A clean Python implementation of the Convex Hull algorithm using divide and conq
 │   ├── test_convex_hull.py    # Unit tests
 │   └── tasks/                 # Task management
 │       └── tasks-convex-hull-divide-conquer.md
-└── README.md                  # This file
+└── README.md                  # What you're reading right now
 ```
 
 ## How it works
