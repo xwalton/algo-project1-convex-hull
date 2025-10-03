@@ -52,5 +52,5 @@
   - [x] 5.2 Create main execution function that reads input, computes hull, and writes output
   - [x] 5.3 Add command-line interface for running the algorithm
   - [x] 5.4 Verify output format matches expected format (one index per line)
-  - [ ] 5.5 Test with provided input.csv and verify against expectedOutput.txt
+  - [x] 5.5 Test with provided input.csv and verify against expectedOutput.txt
   - [ ] 5.6 Write integration tests for the complete pipeline
