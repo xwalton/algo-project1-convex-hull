@@ -503,6 +503,49 @@ def convex_hull_divide_and_conquer(points: list[Point]) -> list[Point]:
     return hull
 
 
+def write_hull_indices_to_file(hull_points: list[Point], original_points: list[Point], filename: str = 'output.txt') -> None:
+    """
+    Write the indices of hull points to an output file.
+    
+    This function finds the indices of the hull points in the original point list
+    and writes them to the specified output file, one index per line.
+    
+    Args:
+        hull_points (list[Point]): List of points forming the convex hull
+        original_points (list[Point]): Original list of all points
+        filename (str): Name of the output file (default: 'output.txt')
+        
+    Raises:
+        ValueError: If hull_points or original_points is empty
+        IOError: If unable to write to the output file
+    """
+    if not hull_points:
+        raise ValueError("Cannot write empty hull to file")
+    
+    if not original_points:
+        raise ValueError("Original points list cannot be empty")
+    
+    # Find indices of hull points in the original point list
+    hull_indices = []
+    for hull_point in hull_points:
+        # Find the index of this hull point in the original points
+        for i, orig_point in enumerate(original_points):
+            if hull_point.x == orig_point.x and hull_point.y == orig_point.y:
+                hull_indices.append(i)
+                break
+        else:
+            # If hull point not found in original points, this is an error
+            raise ValueError(f"Hull point {hull_point} not found in original points")
+    
+    # Write indices to file
+    try:
+        with open(filename, 'w') as file:
+            for index in hull_indices:
+                file.write(f"{index}\n")
+    except IOError as e:
+        raise IOError(f"Unable to write to output file '{filename}': {e}")
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -591,6 +634,21 @@ def main():
             except Exception as e:
                 print(f"✗ PointIsAboveLine test failed: {e}")
             
+            # Test output writing function
+            print("\nTesting output writing function:")
+            try:
+                # Test with simple hull
+                test_hull = [points[0], points[1]]  # First two points
+                write_hull_indices_to_file(test_hull, points, 'test_output.txt')
+                print("✓ Output writing function test passed")
+                
+                # Clean up test file
+                import os
+                if os.path.exists('test_output.txt'):
+                    os.remove('test_output.txt')
+                
+            except Exception as e:
+                print(f"✗ Output writing test failed: {e}")
         
         # TODO: Write output to output.txt
         

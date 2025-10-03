@@ -48,7 +48,7 @@
   - [x] 4.6 Write unit tests for the complete divide and conquer algorithm
 
 - [ ] 5.0 Create Output Generation and Integration
-  - [ ] 5.1 Implement output writing function to generate output.txt with hull point indices
+  - [x] 5.1 Implement output writing function to generate output.txt with hull point indices
   - [ ] 5.2 Create main execution function that reads input, computes hull, and writes output
   - [ ] 5.3 Add command-line interface for running the algorithm
   - [ ] 5.4 Verify output format matches expected format (one index per line)
