@@ -194,6 +194,43 @@ def convex_hull_base_case(points: list[Point]) -> list[Point]:
                 return [p1, p3, p2]
 
 
+def point_is_above_line(p1: Point, p2: Point, q: Point) -> bool:
+    """
+    Determine if point q is above the line formed by points p1 and p2.
+    
+    This function is used for tangent validation in hull merging.
+    
+    Args:
+        p1 (Point): First point defining the line
+        p2 (Point): Second point defining the line  
+        q (Point): Point to test if it's above the line
+        
+    Returns:
+        bool: True if q is above the line, False otherwise
+        
+    Raises:
+        ValueError: If p1 and p2 are the same point (vertical line)
+    """
+    # Handle edge case where p1 and p2 are the same point
+    if p1.x == p2.x and p1.y == p2.y:
+        raise ValueError("Cannot determine line with identical points")
+    
+    # Handle vertical line case
+    if abs(p1.x - p2.x) < 1e-12:  # Vertical line
+        # For vertical lines, compare y-coordinates
+        return q.y > max(p1.y, p2.y)
+    
+    # Calculate slope and y-intercept for the line
+    slope = (p2.y - p1.y) / (p2.x - p1.x)
+    y_intercept = p1.y - slope * p1.x
+    
+    # Calculate the y-value of the line at q's x-coordinate
+    y_line = slope * q.x + y_intercept
+    
+    # Point is above the line if its y-coordinate is greater than the line's y-value
+    return q.y > y_line
+
+
 def main():
     """Main function to run the convex hull algorithm."""
     try:
@@ -256,6 +293,31 @@ def main():
                 print(f"✓ Collinear points hull: {hull_collinear}")
             except Exception as e:
                 print(f"✗ Collinear test failed: {e}")
+            
+            # Test PointIsAboveLine function
+            print("\nTesting PointIsAboveLine function:")
+            try:
+                # Test normal case
+                p1 = Point(0.0, 0.0)
+                p2 = Point(2.0, 2.0)
+                q_above = Point(1.0, 2.0)  # Above the line
+                q_below = Point(1.0, 0.5)  # Below the line
+                
+                above_result = point_is_above_line(p1, p2, q_above)
+                below_result = point_is_above_line(p1, p2, q_below)
+                
+                print(f"Point {q_above} above line: {above_result}")
+                print(f"Point {q_below} above line: {below_result}")
+                
+                # Test vertical line
+                p_vert1 = Point(1.0, 0.0)
+                p_vert2 = Point(1.0, 2.0)
+                q_vert = Point(1.0, 3.0)
+                vert_result = point_is_above_line(p_vert1, p_vert2, q_vert)
+                print(f"Point {q_vert} above vertical line: {vert_result}")
+                
+            except Exception as e:
+                print(f"✗ PointIsAboveLine test failed: {e}")
         
         # TODO: Implement convex hull algorithm
         # TODO: Write output to output.txt

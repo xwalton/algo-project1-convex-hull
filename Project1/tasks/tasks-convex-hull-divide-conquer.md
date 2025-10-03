@@ -32,7 +32,7 @@
   - [x] 2.4 Write unit tests for base case scenarios
 
 - [ ] 3.0 Implement Hull Merging Algorithm
-  - [ ] 3.1 Implement PointIsAboveLine helper function for tangent validation
+  - [x] 3.1 Implement PointIsAboveLine helper function for tangent validation
   - [ ] 3.2 Implement lower tangent finding algorithm between two hulls
   - [ ] 3.3 Implement upper tangent finding algorithm between two hulls
   - [ ] 3.4 Implement MergeHulls function that combines two convex hulls
