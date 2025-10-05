@@ -4,14 +4,14 @@ class Point:
     Used for convex hull calculations in the divide and conquer algorithm.
     """
     
-    def __init__(self, x: float, y: float):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
     
-    def __str__(self) -> str:
+    def __str__(self):
         """String representation of the point."""
-        return f"Point({self.x}, {self.y})"
+        return "Point({}, {})".format(self.x, self.y)
     
-    def __repr__(self) -> str:
+    def __repr__(self):
         """Detailed string representation for debugging."""
-        return f"Point(x={self.x}, y={self.y})"
+        return "Point(x={}, y={})".format(self.x, self.y)

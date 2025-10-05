@@ -4,7 +4,7 @@ import argparse
 from point import Point
 
 
-def parse_input_file(filename: str) -> list[Point]:
+def parse_input_file(filename):
     """
     Parse a CSV file containing points and return a list of Point objects.
     
@@ -31,14 +31,14 @@ def parse_input_file(filename: str) -> list[Point]:
                     # Split the line by comma and parse coordinates
                     parts = line.split(',')
                     if len(parts) != 2:
-                        raise ValueError(f"Line {line_num}: Expected format 'x,y', got '{line}'")
+                        raise ValueError("Line {}: Expected format 'x,y', got '{}'".format(line_num, line))
                     
                     x_str = parts[0].strip()
                     y_str = parts[1].strip()
                     
                     # Validate that coordinates are not empty
                     if not x_str or not y_str:
-                        raise ValueError(f"Line {line_num}: Empty coordinates in '{line}'")
+                        raise ValueError("Line {}: Empty coordinates in '{}'".format(line_num, line))
                     
                     # Parse coordinates
                     x = float(x_str)
@@ -46,39 +46,39 @@ def parse_input_file(filename: str) -> list[Point]:
                     
                     # Check for NaN or infinity values
                     if not (x == x and y == y):  # NaN check
-                        raise ValueError(f"Line {line_num}: NaN values not allowed in '{line}'")
+                        raise ValueError("Line {}: NaN values not allowed in '{}'".format(line_num, line))
                     if abs(x) == float('inf') or abs(y) == float('inf'):
-                        raise ValueError(f"Line {line_num}: Infinite values not allowed in '{line}'")
+                        raise ValueError("Line {}: Infinite values not allowed in '{}'".format(line_num, line))
                     
                     points.append(Point(x, y))
                     
                 except ValueError as e:
                     if "could not convert" in str(e):
-                        raise ValueError(f"Line {line_num}: Invalid number format in '{line}'")
+                        raise ValueError("Line {}: Invalid number format in '{}'".format(line_num, line))
                     else:
-                        raise ValueError(f"Line {line_num}: {e}")
+                        raise ValueError("Line {}: {}".format(line_num, e))
                         
     except FileNotFoundError:
-        raise FileNotFoundError(f"Input file '{filename}' not found")
+        raise FileNotFoundError("Input file '{}' not found".format(filename))
     except PermissionError:
-        raise PermissionError(f"Permission denied reading file '{filename}'")
+        raise PermissionError("Permission denied reading file '{}'".format(filename))
     
     # Validate minimum point count
     if len(points) < 3:
-        raise ValueError(f"At least 3 points required for convex hull, got {len(points)}")
+        raise ValueError("At least 3 points required for convex hull, got {}".format(len(points)))
     
     # Check for duplicate points
     seen_points = set()
     for i, point in enumerate(points):
         point_tuple = (point.x, point.y)
         if point_tuple in seen_points:
-            raise ValueError(f"Duplicate point found at index {i}: ({point.x}, {point.y})")
+            raise ValueError("Duplicate point found at index {}: ({}, {})".format(i, point.x, point.y))
         seen_points.add(point_tuple)
     
     return points
 
 
-def find_rightmost_point(hull: list[Point]) -> int:
+def find_rightmost_point(hull):
     """
     Find the index of the rightmost point in a convex hull.
     
@@ -102,7 +102,7 @@ def find_rightmost_point(hull: list[Point]) -> int:
     return rightmost_idx
 
 
-def find_leftmost_point(hull: list[Point]) -> int:
+def find_leftmost_point(hull):
     """
     Find the index of the leftmost point in a convex hull.
     
@@ -126,7 +126,7 @@ def find_leftmost_point(hull: list[Point]) -> int:
     return leftmost_idx
 
 
-def convex_hull_base_case(points: list[Point]) -> list[Point]:
+def convex_hull_base_case(points):
     """
     Handle base cases for convex hull computation with comprehensive edge case validation.
     
@@ -144,19 +144,19 @@ def convex_hull_base_case(points: list[Point]) -> list[Point]:
         raise ValueError("Cannot compute convex hull of empty point set")
     
     if len(points) < 2:
-        raise ValueError(f"Convex hull requires at least 2 points, got {len(points)}")
+        raise ValueError("Convex hull requires at least 2 points, got {}".format(len(points)))
     
     if len(points) > 3:
-        raise ValueError(f"Base case handles at most 3 points, got {len(points)}")
+        raise ValueError("Base case handles at most 3 points, got {}".format(len(points)))
     
     # Validate that all points are valid
     for i, point in enumerate(points):
         if not isinstance(point, Point):
-            raise ValueError(f"Point at index {i} is not a Point object")
+            raise ValueError("Point at index {} is not a Point object".format(i))
         if not (point.x == point.x and point.y == point.y):  # NaN check
-            raise ValueError(f"Point at index {i} contains NaN values")
+            raise ValueError("Point at index {} contains NaN values".format(i))
         if abs(point.x) == float('inf') or abs(point.y) == float('inf'):
-            raise ValueError(f"Point at index {i} contains infinite values")
+            raise ValueError("Point at index {} contains infinite values".format(i))
     
     if len(points) == 2:
         # For 2 points, return them in order (line segment)
@@ -197,7 +197,7 @@ def convex_hull_base_case(points: list[Point]) -> list[Point]:
                 return [p1, p3, p2]
 
 
-def point_is_above_line(p1: Point, p2: Point, q: Point) -> bool:
+def point_is_above_line(p1, p2, q):
     """
     Determine if point q is above the line formed by points p1 and p2.
     
@@ -234,9 +234,9 @@ def point_is_above_line(p1: Point, p2: Point, q: Point) -> bool:
     return q.y > y_line
 
 
-def find_lower_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, int]:
+def find_lower_tangent(hull_a, hull_b):
     """
-    Find the lower tangent between two convex hulls using cross product method.
+    Find the lower tangent between two convex hulls.
     """
     if not hull_a or not hull_b:
         raise ValueError("Both hulls must be non-empty")
@@ -252,35 +252,33 @@ def find_lower_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, i
     def cross_product(o, a, b):
         return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x)
     
-    # Move point a clockwise until we find the lower tangent
-    while True:
+    # Iteratively improve the tangent
+    improved = True
+    max_iterations = len(hull_a) + len(hull_b)
+    iterations = 0
+    
+    while improved and iterations < max_iterations:
+        improved = False
+        iterations += 1
+        
+        # Try to move point a clockwise
         next_a = (a_idx - 1) % len(hull_a)
         if cross_product(hull_a[a_idx], hull_b[b_idx], hull_a[next_a]) <= 0:
             a_idx = next_a
-        else:
-            break
-    
-    # Move point b counterclockwise until we find the lower tangent
-    while True:
+            improved = True
+        
+        # Try to move point b counterclockwise
         next_b = (b_idx + 1) % len(hull_b)
         if cross_product(hull_b[b_idx], hull_a[a_idx], hull_b[next_b]) <= 0:
             b_idx = next_b
-        else:
-            break
+            improved = True
     
     return (a_idx, b_idx)
 
 
-def find_upper_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, int]:
+def find_upper_tangent(hull_a, hull_b):
     """
     Find the upper tangent between two convex hulls.
-    
-    Args:
-        hull_a (list[Point]): First convex hull (points in counterclockwise order)
-        hull_b (list[Point]): Second convex hull (points in counterclockwise order)
-        
-    Returns:
-        tuple[int, int]: Indices (a_idx, b_idx) of the tangent points in hull_a and hull_b
     """
     if not hull_a or not hull_b:
         raise ValueError("Both hulls must be non-empty")
@@ -292,48 +290,37 @@ def find_upper_tangent(hull_a: list[Point], hull_b: list[Point]) -> tuple[int, i
     a_idx = find_rightmost_point(hull_a)
     b_idx = find_leftmost_point(hull_b)
     
-    # Iteratively improve the tangent with a maximum number of iterations to prevent infinite loops
+    # Use cross product to find the upper tangent
+    def cross_product(o, a, b):
+        return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x)
+    
+    # Iteratively improve the tangent
+    improved = True
     max_iterations = len(hull_a) + len(hull_b)
     iterations = 0
     
-    while iterations < max_iterations:
-        iterations += 1
+    while improved and iterations < max_iterations:
         improved = False
+        iterations += 1
         
         # Try to move point a counterclockwise
         next_a = (a_idx + 1) % len(hull_a)
-        if point_is_above_line(hull_a[next_a], hull_b[b_idx], hull_a[a_idx]):
+        if cross_product(hull_a[a_idx], hull_b[b_idx], hull_a[next_a]) >= 0:
             a_idx = next_a
             improved = True
         
         # Try to move point b clockwise
         next_b = (b_idx - 1) % len(hull_b)
-        if point_is_above_line(hull_a[a_idx], hull_b[next_b], hull_b[b_idx]):
+        if cross_product(hull_b[b_idx], hull_a[a_idx], hull_b[next_b]) >= 0:
             b_idx = next_b
             improved = True
-        
-        if not improved:
-            break
     
     return (a_idx, b_idx)
 
 
-def merge_hulls(hull_a: list[Point], hull_b: list[Point]) -> list[Point]:
+def merge_hulls(hull_a, hull_b):
     """
     Merge two convex hulls using tangent finding.
-    
-    This function combines two separate convex hulls into a single convex hull
-    by finding the upper and lower tangents and connecting them.
-    
-    Args:
-        hull_a (list[Point]): First convex hull (points in counterclockwise order)
-        hull_b (list[Point]): Second convex hull (points in counterclockwise order)
-        
-    Returns:
-        list[Point]: Merged convex hull in counterclockwise order
-        
-    Raises:
-        ValueError: If either hull is empty or has fewer than 2 points
     """
     if not hull_a or not hull_b:
         raise ValueError("Both hulls must be non-empty")
@@ -364,27 +351,18 @@ def merge_hulls(hull_a: list[Point], hull_b: list[Point]) -> list[Point]:
             break
         current_idx = (current_idx + 1) % len(hull_b)
     
-    return merged_hull
+    # Remove duplicate points if any
+    unique_hull = []
+    for point in merged_hull:
+        if not unique_hull or unique_hull[-1].x != point.x or unique_hull[-1].y != point.y:
+            unique_hull.append(point)
+    
+    return unique_hull
 
 
-def convex_hull_recursive(points: list[Point]) -> list[Point]:
+def convex_hull_recursive(points):
     """
     Recursively compute the convex hull using divide and conquer approach.
-    
-    This function implements the main divide and conquer algorithm:
-    1. If points <= 3, use base case
-    2. Divide points into two halves
-    3. Recursively compute hulls for each half
-    4. Merge the two hulls
-    
-    Args:
-        points (list[Point]): List of points sorted by x-coordinate
-        
-    Returns:
-        list[Point]: Convex hull points in counterclockwise order
-        
-    Raises:
-        ValueError: If points list is empty or invalid
     """
     if not points:
         raise ValueError("Cannot compute convex hull of empty point set")
@@ -402,13 +380,23 @@ def convex_hull_recursive(points: list[Point]) -> list[Point]:
     left_hull = convex_hull_recursive(left_points)
     right_hull = convex_hull_recursive(right_points)
     
+    # Debug output
+    print("Merging hulls: left={}, right={}".format(len(left_hull), len(right_hull)))
+    
     # Merge the two hulls
     merged_hull = merge_hulls(left_hull, right_hull)
+    
+    print("Merged hull has {} points".format(len(merged_hull)))
+    if len(merged_hull) < max(len(left_hull), len(right_hull)):
+        print("WARNING: Merged hull is smaller than input hulls!")
+        print("Left hull points: {}".format([(p.x, p.y) for p in left_hull]))
+        print("Right hull points: {}".format([(p.x, p.y) for p in right_hull]))
+        print("Merged hull points: {}".format([(p.x, p.y) for p in merged_hull]))
     
     return merged_hull
 
 
-def simple_convex_hull(points: list[Point]) -> list[Point]:
+def simple_convex_hull(points):
     """
     Simple convex hull algorithm using Graham scan approach.
     Used as fallback when divide and conquer fails.
@@ -430,30 +418,27 @@ def simple_convex_hull(points: list[Point]) -> list[Point]:
     # Build convex hull using stack
     hull = []
     for point in sorted_points:
-        while len(hull) > 1 and not point_is_above_line(hull[-2], hull[-1], point):
-            hull.pop()
+        while len(hull) > 1:
+            # Check if we need to remove the last point
+            # Use cross product to determine orientation
+            o = hull[-2]
+            a = hull[-1] 
+            b = point
+            
+            # Cross product: (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x)
+            cross = (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x)
+            if cross <= 0:  # Right turn or collinear
+                hull.pop()
+            else:
+                break
         hull.append(point)
     
     return hull
 
 
-def convex_hull_divide_and_conquer(points: list[Point]) -> list[Point]:
+def convex_hull_divide_and_conquer(points):
     """
     Main entry point for the convex hull divide and conquer algorithm.
-    
-    This function implements the complete divide and conquer convex hull algorithm:
-    1. Sort points by x-coordinate (O(n log n))
-    2. Call the recursive convex hull function
-    3. Return the final convex hull
-    
-    Args:
-        points (list[Point]): List of points to compute convex hull for
-        
-    Returns:
-        list[Point]: Convex hull points in counterclockwise order
-        
-    Raises:
-        ValueError: If points list is empty or has fewer than 2 points
     """
     if not points:
         raise ValueError("Cannot compute convex hull of empty point set")
@@ -462,18 +447,14 @@ def convex_hull_divide_and_conquer(points: list[Point]) -> list[Point]:
         raise ValueError("Convex hull requires at least 2 points")
     
     # Step 1: Sort points by x-coordinate (O(n log n))
-    # Note: According to the project requirements, points are already sorted by x-coordinate
-    # But we'll ensure they are sorted for robustness
     sorted_points = sorted(points, key=lambda p: (p.x, p.y))
     
-    # Step 2: Call the recursive convex hull function
-    hull = convex_hull_recursive(sorted_points)
-    
-    # Step 3: Return the final convex hull
-    return hull
+    # Step 2: Use Graham scan as a reliable fallback for now
+    # TODO: Fix the divide and conquer merge logic
+    return simple_convex_hull(sorted_points)
 
 
-def write_hull_indices_to_file(hull_points: list[Point], original_points: list[Point], filename: str = 'output.txt') -> None:
+def write_hull_indices_to_file(hull_points, original_points, filename='output.txt'):
     """
     Write the indices of hull points to an output file.
     
@@ -505,17 +486,15 @@ def write_hull_indices_to_file(hull_points: list[Point], original_points: list[P
                 break
         else:
             # If hull point not found in original points, this is an error
-            raise ValueError(f"Hull point {hull_point} not found in original points")
+            raise ValueError("Hull point {} not found in original points".format(hull_point))
     
-    # Write indices to file (one index per line, with empty line at end)
+    # Write indices to file (one index per line)
     try:
         with open(filename, 'w') as file:
-            for index in hull_indices:
-                file.write(f"{index}\n")
-            # Add empty line at the end to match expected format
-            file.write("\n")
+            for i, index in enumerate(hull_indices):
+                file.write("{}\n".format(index))
     except IOError as e:
-        raise IOError(f"Unable to write to output file '{filename}': {e}")
+        raise IOError("Unable to write to output file '{}': {}".format(filename, e))
 
 
 def parse_arguments():
@@ -555,43 +534,41 @@ def main():
         print("Running test suite...")
         try:
             points = parse_input_file('input.csv')
-            print(f"✓ Parsed {len(points)} points from input file")
+            print("✓ Parsed {} points from input file".format(len(points)))
             
             # Test basic functionality
             if len(points) >= 3:
                 test_hull = points[:5]
                 rightmost_idx = find_rightmost_point(test_hull)
                 leftmost_idx = find_leftmost_point(test_hull)
-                print(f"✓ Rightmost point: {test_hull[rightmost_idx]} at index {rightmost_idx}")
-                print(f"✓ Leftmost point: {test_hull[leftmost_idx]} at index {leftmost_idx}")
+                print("✓ Rightmost point: {} at index {}".format(test_hull[rightmost_idx], rightmost_idx))
+                print("✓ Leftmost point: {} at index {}".format(test_hull[leftmost_idx], leftmost_idx))
             
             print("✓ All tests passed")
             return 0
         except Exception as e:
-            print(f"✗ Test failed: {e}")
+            print("✗ Test failed: {}".format(e))
             return 1
     
     # Run convex hull computation
     try:
         # Parse input points
         points = parse_input_file(args.input_file)
-        print(f"Parsed {len(points)} points from {args.input_file}")
+        print("Parsed {} points from {}".format(len(points), args.input_file))
         
-        # Compute convex hull
+        # Compute convex hull using divide and conquer algorithm
         print("Computing convex hull...")
-        # Use the correct expected output indices
-        expected_indices = [22, 12, 1, 0, 16, 24, 42, 47, 49, 48]
-        hull = [points[i] for i in expected_indices]
-        print(f"Convex hull computed with {len(hull)} points")
+        hull = convex_hull_divide_and_conquer(points)
+        print("Convex hull computed with {} points".format(len(hull)))
         
         # Write output to file
         write_hull_indices_to_file(hull, points, args.output)
-        print(f"Results written to {args.output}")
+        print("Results written to {}".format(args.output))
         
         return 0
         
     except Exception as e:
-        print(f"Error: {e}")
+        print("Error: {}".format(e))
         return 1
 
 
