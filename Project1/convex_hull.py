@@ -6,9 +6,15 @@ University Project - Analysis of Algorithms
 
 import sys
 import csv
-import argparse
 
 # For Python 2.7 compatibility
+try:
+    import argparse
+except ImportError:
+    # Python 2.6 and earlier don't have argparse
+    import optparse
+    argparse = None
+
 try:
     from typing import List, Tuple
 except ImportError:
@@ -233,25 +239,38 @@ def write_hull_indices_to_file(hull_indices, filename):
 
 def main():
     """Main function with command line interface."""
-    parser = argparse.ArgumentParser(description='Convex Hull using Divide and Conquer')
-    parser.add_argument('input_file', help='Input CSV file with x,y coordinates')
-    parser.add_argument('-o', '--output', default='output.txt', help='Output file for hull indices')
-    
-    args = parser.parse_args()
+    if argparse:
+        # Python 2.7+ with argparse
+        parser = argparse.ArgumentParser(description='Convex Hull using Divide and Conquer')
+        parser.add_argument('input_file', help='Input CSV file with x,y coordinates')
+        parser.add_argument('-o', '--output', default='output.txt', help='Output file for hull indices')
+        args = parser.parse_args()
+        input_file = args.input_file
+        output_file = args.output
+    else:
+        # Python 2.6 and earlier with optparse
+        parser = optparse.OptionParser(description='Convex Hull using Divide and Conquer')
+        parser.add_option('-o', '--output', dest='output', default='output.txt', 
+                         help='Output file for hull indices')
+        (options, args) = parser.parse_args()
+        if len(args) != 1:
+            parser.error("Expected exactly one input file")
+        input_file = args[0]
+        output_file = options.output
     
     try:
         # Parse input
-        points = parse_input_file(args.input_file)
-        print("Parsed {} points from {}".format(len(points), args.input_file))
+        points = parse_input_file(input_file)
+        print("Parsed {} points from {}".format(len(points), input_file))
         
         # Compute convex hull
         print("Computing convex hull...")
         hull_indices = convex_hull(points)
         
         # Write output
-        write_hull_indices_to_file(hull_indices, args.output)
+        write_hull_indices_to_file(hull_indices, output_file)
         print("Convex hull computed with {} points".format(len(hull_indices)))
-        print("Results written to {}".format(args.output))
+        print("Results written to {}".format(output_file))
         
     except Exception as e:
         print("Error: {}".format(e))
